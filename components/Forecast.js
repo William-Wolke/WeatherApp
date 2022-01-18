@@ -24,7 +24,6 @@ import useFetch from './useFetch';
 const Forecast = () => {
 
     const {data, isPending, error} = useFetch('stockholm');
-    /*var url = ";*/
     return (
         <View>
             {isPending && <Text>Loading...</Text>}
@@ -33,17 +32,19 @@ const Forecast = () => {
                         <View>
                             <Text style={styles.title}>{'Stockholm'}</Text>
                             <Text style={styles.temp}>{parseInt(data.main.temp)-273}&deg; C</Text>
-                            
-                            {/*<Image 
-                              source={{uri:"http://openweathermap.org/img/wn/" + data.weather.icon + "@2x.png"}}
-                              style={styles.icon}
-                            />*/}
+                            <View>
+                              <Image
+                                style={{width: 252, height: 252}}
+                                source={{uri: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.svgrepo.com%2Fsvg%2F353655%2Fdiscord-icon&psig=AOvVaw1Yj6Khd5hZQHW3yogOv-ac&ust=1642585442526000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCNCc5eCBu_UCFQAAAAAdAAAAABAn'}}
+                              />
+                            </View>
                         </View>
-                        
-                        <Text style={styles.data}>{data.weather[0].main}</Text>
-                        <Text style={styles.data}>Känns som: {parseInt(data.main.feels_like)-273} C</Text>
-                        <Text style={styles.data}>Vindhastighet: {data.wind.speed} m/s</Text>
-                        <Text style={styles.data}>Luftfuktighet: {data.main.humidity}%</Text>
+                        <View>
+                          <Text style={styles.data}></Text>
+                          <Text style={styles.data}>Känns som: {parseInt(data.main.feels_like)-273} C</Text>
+                          <Text style={styles.data}>Vindhastighet: {data.wind.speed} m/s</Text>
+                          <Text style={styles.data}>Luftfuktighet: {data.main.humidity}%</Text>
+                        </View>
                     </View>
             }
         </View>
@@ -65,10 +66,8 @@ const styles = StyleSheet.create({
       data: {
           margin: '2%',
         textAlign: 'center',
-      },
+      }, 
       icon: {
-        width: '50%',
-        height: 'auto',
         float: 'right',
       },
 });
