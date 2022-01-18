@@ -1,27 +1,46 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import keys from '../secrets/keys.json';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import axios from 'axios';
 
 const useFetch = (city) => {
+  var url =
+    'https://api.openweathermap.org/data/2.5/weather?q=' +
+    city +
+    '&appid=' +
+    keys.openweatherKey;
 
-    axios.get('https://api.openweathermap.org/data/2.5/weather?q=' + city +'&appid=1ad054194d54fb7b0bfb21fb6af41878')
+  const [data, setData] = useState(null);
+  const [isPending, setIsPending] = useState(true);
+  const [error, setError] = useState(null);
 
-    return {};
-}
+  useEffect(() => {
+    const abortCont = new AbortController();
+
+    fetch(url)
+      .then(res => {
+        if (!res.ok) {
+          throw Error('could not fetch data for that recource');
+        }
+        return res.json();
+      })
+      .then(data => {
+        setData(data);
+        setIsPending(false);
+        setError(null);
+      })
+      .catch(error => {
+        if (error.name === 'AbortError') {
+        } else {
+          setIsPending(false);
+          setError(error.message);
+        }
+      });
+
+    return () => abortCont.abort();
+  }, [url]);
+
+  return {data, isPending, error};
+};
+
+export default useFetch;

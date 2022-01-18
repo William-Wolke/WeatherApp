@@ -1,7 +1,7 @@
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
- *
+ * 
  * @format
  * @flow strict-local
  */
@@ -25,6 +25,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import Forecast from './components/Forecast';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -35,7 +36,7 @@ const App = () => {
 
   return (
     <ScrollView>
-          
+          <Forecast/>
     </ScrollView>
   );
 };
