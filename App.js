@@ -35,13 +35,16 @@ const App = () => {
   };
 
   return (
-    <ScrollView>
-          <Forecast/>
+    <ScrollView style={styles.container}>
+      <Forecast/>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#74acdb',
+  },
   sectionContainer: {
     marginTop: 32,
     paddingHorizontal: 24,
