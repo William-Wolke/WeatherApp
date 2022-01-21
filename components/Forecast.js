@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect, Fragment} from 'react';
 import {Node} from 'react';
 import {
   SafeAreaView,
@@ -19,17 +19,37 @@ import {
   ReloadInstructions,
   ActivityIndicator,
 } from 'react-native/Libraries/NewAppScreen';
-import useFetch from './useFetch';
+import getWeather from './getWeather';
 import blatantStealing from './blatantStealing.json';
+import useUnixTime from './useUnixTime';
 
 const Forecast = () => {
-  const {data, isPending, error} = useFetch('stockholm');
+  const [data, setData] = useState('');
+  const [pending, setPending] = useState(true);
+  const [error, setError] = useState(false);
+  const [sunrise, setSunrise] = useState('');
+  const [sunset, setSunset] = useState('');
+
+  useEffect(() => {
+    const { data: newData, isPending, error: newError } = getWeather('stockholm')
+      .then(() => {
+        setData(newData);
+        setPending(isPending);
+        setError(newError);
+        setSunrise(useUnixTime(data.sys.sunrise));
+        setSunset(useUnixTime(data.sys.sunset));
+      })
+      .catch(error => {
+        setError(error);
+        throw error;
+      });
+  }, []);
 
   return (
-    <View>
-      {isPending && <Text>Loading...</Text>}
-      {error && <Text>{error}</Text>}
-      {data && (
+    <React.Fragment>
+      {pending && <Text>Loading...</Text>}
+      {error && <Text>{error.message}</Text>}
+      <Text>{data && (
         <View style={styles.container}>
           <View style={styles.header}>
             <View style={styles.titleContainer}>
@@ -38,6 +58,7 @@ const Forecast = () => {
                 {parseInt(data.main.temp) - 273}&deg; C
               </Text>
             </View>
+
             <View style={styles.iconContainer}>
               {blatantStealing.map((item, index) => {
                 if (item.name === data.weather[0].icon) {
@@ -52,6 +73,7 @@ const Forecast = () => {
               })}
             </View>
           </View>
+
           <View>
             <Text style={styles.data}></Text>
             <Text style={styles.data}>
@@ -64,17 +86,42 @@ const Forecast = () => {
               Luftfuktighet: {data.main.humidity}%
             </Text>
           </View>
-          <View style={styles.line}>
 
+          <View style={styles.line}></View>
+          <View>
+            <View>
+              <Text>Soluppgång</Text>
+              <Text>{sunrise}</Text>
+            </View>
+            <View>
+              <Text>Solnedgång</Text>
+              <Text>{sunset}</Text>
+            </View>
+          </View>
+          <View>
+            <View>
+              <Image />
+              <Text></Text>
+              <Text></Text>
+            </View>
+            <View>
+              <Image />
+              <Text></Text>
+              <Text></Text>
+            </View>
+            <View>
+              <Image />
+              <Text></Text>
+              <Text></Text>
+            </View>
           </View>
         </View>
-      )}
-    </View>
+      )}</Text>
+    </React.Fragment>
   );
 };
 
 const styles = StyleSheet.create({
-
   container: {
     color: 'white',
     marginTop: '15%',
@@ -121,7 +168,7 @@ const styles = StyleSheet.create({
     marginRight: '10%',
     marginLeft: '10%',
     marginTop: '5%',
-    borderBottomColor: "white",
+    borderBottomColor: 'white',
     borderBottomWidth: 2,
   },
 });
